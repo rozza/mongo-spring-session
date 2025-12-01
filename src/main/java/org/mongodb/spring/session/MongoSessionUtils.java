@@ -18,7 +18,6 @@
 package org.mongodb.spring.session;
 
 import com.mongodb.ConnectionString;
-import com.mongodb.DBObject;
 import org.bson.Document;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.convert.TypeDescriptor;
@@ -36,10 +35,10 @@ final class MongoSessionUtils {
 
     private MongoSessionUtils() {}
 
-    @Nullable static DBObject convertToDBObject(AbstractMongoSessionConverter mongoSessionConverter, MongoSession session) {
+    @Nullable static Document convertToDocument(AbstractMongoSessionConverter mongoSessionConverter, MongoSession session) {
 
-        return (DBObject) mongoSessionConverter.convert(
-                session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(DBObject.class));
+        return (Document) mongoSessionConverter.convert(
+                session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(Document.class));
     }
 
     @Nullable static MongoSession convertToSession(AbstractMongoSessionConverter mongoSessionConverter, Document session) {

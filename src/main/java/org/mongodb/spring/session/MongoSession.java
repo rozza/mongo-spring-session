@@ -157,7 +157,6 @@ public final class MongoSession implements Session {
 
     @Override
     public void setAttribute(String attributeName, Object attributeValue) {
-
         if (attributeValue == null) {
             removeAttribute(coverDot(attributeName));
         } else {

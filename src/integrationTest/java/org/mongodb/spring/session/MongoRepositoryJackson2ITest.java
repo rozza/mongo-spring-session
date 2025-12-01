@@ -26,19 +26,19 @@ import org.junit.jupiter.api.Test;
 import org.mongodb.spring.session.config.annotation.web.http.EnableMongoHttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.geo.GeoJacksonModule;
+import org.springframework.data.geo.GeoModule;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
- * Integration tests for {@link MongoIndexedSessionRepository} that use {@link JacksonMongoSessionConverter} based
- * session serialization.
+ * Integration tests for {@link org.mongodb.spring.session.MongoIndexedSessionRepository} that use
+ * {@link JacksonMongoSessionConverter} based session serialization.
  *
  * @author Jakub Kubrynski
  * @author Vedran Pavic
  * @author Greg Turnquist
  */
 @ContextConfiguration
-class MongoRepositoryJacksonITest extends AbstractMongoRepositoryITest {
+class MongoRepositoryJackson2ITest extends AbstractMongoRepositoryITest {
 
     @Test
     void findByCustomIndex() throws Exception {
@@ -62,8 +62,9 @@ class MongoRepositoryJacksonITest extends AbstractMongoRepositoryITest {
     static class Config extends BaseConfig {
 
         @Bean
+        @SuppressWarnings("removal")
         AbstractMongoSessionConverter mongoSessionConverter() {
-            return new JacksonMongoSessionConverter(singletonList(new GeoJacksonModule()));
+            return new Jackson2MongoSessionConverter(singletonList(new GeoModule()));
         }
     }
     // end::sample[]

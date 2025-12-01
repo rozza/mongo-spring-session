@@ -20,6 +20,13 @@ package org.mongodb.spring.session;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,26 +38,23 @@ import org.bson.json.JsonWriterSettings;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.jackson.SecurityJacksonModules;
+import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.util.Assert;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.JacksonModule;
-import tools.jackson.databind.MapperFeature;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.PropertyNamingStrategies;
-import tools.jackson.databind.cfg.DateTimeFeature;
-import tools.jackson.databind.json.JsonMapper;
 
 /**
- * {@code AbstractMongoSessionConverter} implementation using Jackson 3.
+ * {@code AbstractMongoSessionConverter} implementation using Jackson 2.
  *
- * @since 4.0.0
+ * @author Jakub Kubrynski
+ * @author Greg Turnquist
+ * @author Michael Ruf
+ * @since 1.2
+ * @deprecated deprecated in favor of the Jackson 3 implementation {@link JacksonMongoSessionConverter}
  */
-public class JacksonMongoSessionConverter extends AbstractMongoSessionConverter {
+@Deprecated(forRemoval = true)
+public class Jackson2MongoSessionConverter extends AbstractMongoSessionConverter {
 
-    private static final Log LOG = LogFactory.getLog(JacksonMongoSessionConverter.class);
+    private static final Log LOG = LogFactory.getLog(Jackson2MongoSessionConverter.class);
 
     private static final String ATTRS_FIELD_NAME = "attrs.";
 
@@ -60,26 +64,29 @@ public class JacksonMongoSessionConverter extends AbstractMongoSessionConverter 
 
     private final ObjectMapper objectMapper;
 
-    /** Creates a new {@link JacksonMongoSessionConverter} with no additional modules registered. */
-    public JacksonMongoSessionConverter() {
+    /** Creates a new {@link Jackson2MongoSessionConverter} with no additional modules registered. */
+    public Jackson2MongoSessionConverter() {
         this(Collections.emptyList());
     }
 
     /**
-     * Creates a new {@link JacksonMongoSessionConverter} and registers the provided {@link JacksonModule}s.
+     * Creates a new {@link Jackson2MongoSessionConverter} and registers the provided {@link Module}s.
      *
      * @param modules iterable of modules to register
      */
-    public JacksonMongoSessionConverter(final Iterable<JacksonModule> modules) {
-        objectMapper = configureJsonMapper().addModules(modules).build();
+    public Jackson2MongoSessionConverter(Iterable<Module> modules) {
+
+        this.objectMapper = buildObjectMapper();
+        this.objectMapper.registerModules(modules);
     }
 
     /**
-     * Creates a new {@link JacksonMongoSessionConverter} using the provided {@link ObjectMapper}.
+     * Creates a new {@link Jackson2MongoSessionConverter} using the provided {@link ObjectMapper}.
      *
      * @param objectMapper the object mapper to use; must not be {@code null}
      */
-    public JacksonMongoSessionConverter(final ObjectMapper objectMapper) {
+    public Jackson2MongoSessionConverter(ObjectMapper objectMapper) {
+
         Assert.notNull(objectMapper, "ObjectMapper can NOT be null!");
         this.objectMapper = objectMapper;
     }
@@ -95,31 +102,30 @@ public class JacksonMongoSessionConverter extends AbstractMongoSessionConverter 
         }
     }
 
-    private JsonMapper.Builder configureJsonMapper() {
+    @SuppressWarnings("removal")
+    private ObjectMapper buildObjectMapper() {
 
-        JsonMapper.Builder jsonMapperBuilder = JsonMapper.builder();
-        jsonMapperBuilder
-                .enable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .enable(DateTimeFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
-                .enable(MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS)
-                .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
+        ObjectMapper objectMapper = new ObjectMapper();
 
         // serialize fields instead of properties
-        jsonMapperBuilder.changeDefaultVisibility(checker ->
-                checker.with(JsonAutoDetect.Visibility.NONE).withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-        jsonMapperBuilder.propertyNamingStrategy(new MongoIdNamingStrategy());
+        // ignore unresolved fields (mostly 'principal')
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        jsonMapperBuilder.addModules(
-                SecurityJacksonModules.getModules(getClass().getClassLoader()));
-        jsonMapperBuilder.addMixIn(MongoSession.class, MongoSessionMixin.class);
-        jsonMapperBuilder.addMixIn(HashMap.class, HashMapMixin.class);
+        objectMapper.setPropertyNamingStrategy(new MongoIdNamingStrategy());
 
-        return jsonMapperBuilder;
+        objectMapper.registerModules(
+                SecurityJackson2Modules.getModules(getClass().getClassLoader()));
+        objectMapper.addMixIn(MongoSession.class, MongoSessionMixin.class);
+        objectMapper.addMixIn(HashMap.class, HashMapMixin.class);
+
+        return objectMapper;
     }
 
     @Override
-    protected Document convert(final MongoSession source) {
+    protected Document convert(MongoSession source) {
 
         try {
             Document dbSession = Document.parse(this.objectMapper.writeValueAsString(source));
@@ -128,13 +134,13 @@ public class JacksonMongoSessionConverter extends AbstractMongoSessionConverter 
             dbSession.put(PRINCIPAL_FIELD_NAME, extractPrincipal(source));
             dbSession.put(EXPIRE_AT_FIELD_NAME, source.getExpireAt());
             return dbSession;
-        } catch (JacksonException ex) {
+        } catch (JsonProcessingException ex) {
             throw new IllegalStateException("Cannot convert MongoExpiringSession", ex);
         }
     }
 
     @Override
-    @Nullable protected MongoSession convert(final Document source) {
+    @Nullable protected MongoSession convert(Document source) {
 
         Date expireAt = (Date) source.remove(EXPIRE_AT_FIELD_NAME);
         source.remove("originalSessionId");
@@ -145,13 +151,13 @@ public class JacksonMongoSessionConverter extends AbstractMongoSessionConverter 
             MongoSession mongoSession = this.objectMapper.readValue(json, MongoSession.class);
             mongoSession.setExpireAt(expireAt);
             return mongoSession;
-        } catch (JacksonException ex) {
+        } catch (IOException ex) {
             LOG.error("Error during Mongo Session deserialization", ex);
             return null;
         }
     }
 
-    /** Used to whitelist {@link MongoSession} for {@link SecurityJacksonModules}. */
+    /** Used to whitelist {@link MongoSession} for {@link SecurityJackson2Modules}. */
     @SuppressWarnings("unused")
     private static class MongoSessionMixin {
 
@@ -160,7 +166,7 @@ public class JacksonMongoSessionConverter extends AbstractMongoSessionConverter 
                 @JsonProperty("_id") String id, @JsonProperty("intervalSeconds") long maxInactiveIntervalInSeconds) {}
     }
 
-    /** Used to whitelist {@link HashMap} for {@link SecurityJacksonModules}. */
+    /** Used to whitelist {@link HashMap} for {@link SecurityJackson2Modules}. */
     private static class HashMapMixin {
 
         // Nothing special
@@ -171,7 +177,7 @@ public class JacksonMongoSessionConverter extends AbstractMongoSessionConverter 
         private static final long serialVersionUID = 2L;
 
         @Override
-        public String translate(final String propertyName) {
+        public String translate(String propertyName) {
 
             return switch (propertyName) {
                 case "id" -> "_id";

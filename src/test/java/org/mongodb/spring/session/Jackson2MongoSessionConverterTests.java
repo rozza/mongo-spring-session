@@ -17,6 +17,7 @@
 
 package org.mongodb.spring.session;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,15 +28,15 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.ReflectionUtils;
-import tools.jackson.databind.ObjectMapper;
 
 /**
  * @author Jakub Kubrynski
  * @author Greg Turnquist
  */
-class JacksonMongoSessionConverterTests extends AbstractMongoSessionConverterTests {
+@SuppressWarnings("removal")
+class Jackson2MongoSessionConverterTests extends AbstractMongoSessionConverterTests {
 
-    JacksonMongoSessionConverter mongoSessionConverter = new JacksonMongoSessionConverter();
+    Jackson2MongoSessionConverter mongoSessionConverter = new Jackson2MongoSessionConverter();
 
     @Override
     AbstractMongoSessionConverter getMongoSessionConverter() {
@@ -74,10 +75,10 @@ class JacksonMongoSessionConverterTests extends AbstractMongoSessionConverterTes
         ObjectMapper myMapper = new ObjectMapper();
 
         // when
-        JacksonMongoSessionConverter converter = new JacksonMongoSessionConverter(myMapper);
+        Jackson2MongoSessionConverter converter = new Jackson2MongoSessionConverter(myMapper);
 
         // then
-        Field objectMapperField = ReflectionUtils.findField(JacksonMongoSessionConverter.class, "objectMapper");
+        Field objectMapperField = ReflectionUtils.findField(Jackson2MongoSessionConverter.class, "objectMapper");
         ReflectionUtils.makeAccessible(objectMapperField);
         ObjectMapper converterMapper = (ObjectMapper) ReflectionUtils.getField(objectMapperField, converter);
 
@@ -88,7 +89,7 @@ class JacksonMongoSessionConverterTests extends AbstractMongoSessionConverterTes
     void shouldNotAllowNullObjectMapperToBeInjected() {
 
         Assertions.assertThatIllegalArgumentException()
-                .isThrownBy(() -> new JacksonMongoSessionConverter((ObjectMapper) null));
+                .isThrownBy(() -> new Jackson2MongoSessionConverter((ObjectMapper) null));
     }
 
     @Test

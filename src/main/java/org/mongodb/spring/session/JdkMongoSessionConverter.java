@@ -19,8 +19,6 @@ package org.mongodb.spring.session;
 
 import static java.lang.String.format;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -108,19 +106,19 @@ public class JdkMongoSessionConverter extends AbstractMongoSessionConverter {
     }
 
     @Override
-    protected DBObject convert(MongoSession session) {
+    protected Document convert(MongoSession session) {
 
-        BasicDBObject basicDBObject = new BasicDBObject();
+        Document dbSession = new Document();
 
-        basicDBObject.put(ID, session.getId());
-        basicDBObject.put(CREATION_TIME, session.getCreationTime());
-        basicDBObject.put(LAST_ACCESSED_TIME, session.getLastAccessedTime());
-        basicDBObject.put(MAX_INTERVAL, session.getMaxInactiveInterval());
-        basicDBObject.put(PRINCIPAL_FIELD_NAME, extractPrincipal(session));
-        basicDBObject.put(EXPIRE_AT_FIELD_NAME, session.getExpireAt());
-        basicDBObject.put(ATTRIBUTES, serializeAttributes(session));
+        dbSession.put(ID, session.getId());
+        dbSession.put(CREATION_TIME, session.getCreationTime());
+        dbSession.put(LAST_ACCESSED_TIME, session.getLastAccessedTime());
+        dbSession.put(MAX_INTERVAL, session.getMaxInactiveInterval());
+        dbSession.put(PRINCIPAL_FIELD_NAME, extractPrincipal(session));
+        dbSession.put(EXPIRE_AT_FIELD_NAME, session.getExpireAt());
+        dbSession.put(ATTRIBUTES, serializeAttributes(session));
 
-        return basicDBObject;
+        return dbSession;
     }
 
     @Override

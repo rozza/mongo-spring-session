@@ -18,6 +18,7 @@ spring-data = "2025.1.0"
 spring-security = "7.0.0"
 spring-framework = "7.0.0"
 jackson2 = "2.20.1"
+jackson3 = "3.0.2"
 jspecify = "1.0.0"
 
 project-reactor = "2025.0.0"
@@ -50,9 +51,11 @@ spring-session-bom = { module = "org.springframework.session:spring-session-bom"
 spring-session-core = { module = "org.springframework.session:spring-session-core" }
 spring-data-bom = { module = "org.springframework.data:spring-data-bom", version.ref = "spring-data" }
 spring-data-mongodb = { module = "org.springframework.data:spring-data-mongodb" }
-jackson-bom =  { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson2" }
-jackson-databind =  { module = "com.fasterxml.jackson.core:jackson-databind" }
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify"}
+jackson2-bom =  { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson2" }
+jackson2-databind =  { module = "com.fasterxml.jackson.core:jackson-databind" }
+jackson3-bom =  { module = "tools.jackson:jackson-bom", version.ref = "jackson3" }
+jackson3-databind =  { module = "tools.jackson.core:jackson-databind" }
 
 spring-security-bom = { module = "org.springframework.security:spring-security-bom", version.ref = "spring-security" }
 spring-security-core = { module = "org.springframework.security:spring-security-core" }

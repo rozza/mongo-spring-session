@@ -17,7 +17,6 @@
 
 package org.mongodb.spring.session;
 
-import com.mongodb.DBObject;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
@@ -104,9 +103,9 @@ public class MongoIndexedSessionRepository
     @Override
     @SuppressWarnings("NullAway")
     public void save(MongoSession session) {
-        DBObject dbObject = MongoSessionUtils.convertToDBObject(this.mongoSessionConverter, session);
-        Assert.notNull(dbObject, "dbObject must not be null");
-        this.mongoOperations.save(dbObject, this.collectionName);
+        Document document = MongoSessionUtils.convertToDocument(this.mongoSessionConverter, session);
+        Assert.notNull(document, "document must not be null");
+        this.mongoOperations.save(document, this.collectionName);
     }
 
     @Override

@@ -116,18 +116,18 @@ public class ReactiveMongoSessionRepository
     public Mono<Void> save(MongoSession session) {
 
         return Mono //
-                .justOrEmpty(MongoSessionUtils.convertToDBObject(this.mongoSessionConverter, session)) //
-                .flatMap((dbObject) -> {
+                .justOrEmpty(MongoSessionUtils.convertToDocument(this.mongoSessionConverter, session)) //
+                .flatMap((document) -> {
                     if (session.hasChangedSessionId()) {
 
                         return this.mongoOperations
                                 .remove(
                                         Query.query(Criteria.where("_id").is(session.getOriginalSessionId())),
                                         this.collectionName) //
-                                .then(this.mongoOperations.save(dbObject, this.collectionName));
+                                .then(this.mongoOperations.save(document, this.collectionName));
                     } else {
 
-                        return this.mongoOperations.save(dbObject, this.collectionName);
+                        return this.mongoOperations.save(document, this.collectionName);
                     }
                 }) //
                 .then();

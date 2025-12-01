@@ -26,8 +26,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.mock;
 import static org.mockito.BDDMockito.verify;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
@@ -88,10 +86,10 @@ class MongoIndexedSessionRepositoryTests {
 
         // given
         MongoSession session = new MongoSession();
-        BasicDBObject dbSession = new BasicDBObject();
+        Document dbSession = new Document();
 
         given(this.converter.convert(
-                        session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(DBObject.class)))
+                        session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(Document.class)))
                 .willReturn(dbSession);
         // when
         this.repository.save(session);
