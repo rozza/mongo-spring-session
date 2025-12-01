@@ -17,7 +17,13 @@ specific solution. It also provides transparent integration with:
 ## Migrating from `spring-session-data-mongodb`
 
 The API namespace has changed from `org.springframework.session.data.mongo` to `org.mongodb.spring.session`.
-The rest of the classes remain the same.
+
+As per the wider changes in the Spring framework, Jackson 2 support is deprecated and Jackson 3 support has been added:
+
+### Jackson Json support:
+
+ * **Jackson 2** support is now deprecated and is available via `Jackson2MongoSessionConverter`
+ * **Jackson 3** support is now available via `JacksonMongoSessionConverter`
 
 ## Support / Feedback
 

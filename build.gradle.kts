@@ -161,15 +161,18 @@ dependencies {
     api(platform(libs.spring.data.bom))
     api(libs.spring.data.mongodb)
 
-    api(platform(libs.jackson.bom))
-    api(libs.jackson.databind)
-
     api(platform(libs.spring.security.bom))
     api(libs.spring.security.core)
 
     api(libs.jspecify)
 
     // Optional dependencies
+    "optionalApi"(platform(libs.jackson2.bom))
+    "optionalApi"(libs.jackson2.databind)
+
+    "optionalApi"(platform(libs.jackson3.bom))
+    "optionalApi"(libs.jackson3.databind)
+
     "optionalApi"(platform(libs.project.reactor.bom))
     "optionalApi"(libs.project.reactor.core)
 

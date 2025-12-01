@@ -17,7 +17,6 @@
 
 package org.mongodb.spring.session;
 
-import com.mongodb.DBObject;
 import java.util.Collections;
 import java.util.Set;
 import org.apache.commons.logging.Log;
@@ -108,7 +107,7 @@ public abstract class AbstractMongoSessionConverter implements GenericConverter 
 
     @Override
     public Set<ConvertiblePair> getConvertibleTypes() {
-        return Collections.singleton(new ConvertiblePair(DBObject.class, MongoSession.class));
+        return Collections.singleton(new ConvertiblePair(Document.class, MongoSession.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -119,16 +118,14 @@ public abstract class AbstractMongoSessionConverter implements GenericConverter 
             return null;
         }
 
-        if (DBObject.class.isAssignableFrom(sourceType.getType())) {
-            return convert(new Document(((DBObject) source).toMap()));
-        } else if (Document.class.isAssignableFrom(sourceType.getType())) {
+        if (Document.class.isAssignableFrom(sourceType.getType())) {
             return convert((Document) source);
         } else {
             return convert((MongoSession) source);
         }
     }
 
-    protected abstract DBObject convert(MongoSession session);
+    protected abstract Document convert(MongoSession session);
 
     @Nullable protected abstract MongoSession convert(Document sessionWrapper);
 

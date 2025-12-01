@@ -18,8 +18,8 @@
 package org.mongodb.spring.session;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mongodb.spring.session.MongoSessionUtils.convertToDocument;
 
-import com.mongodb.DBObject;
 import java.time.Duration;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
@@ -42,8 +42,8 @@ public abstract class AbstractMongoSessionConverterTests {
         toSerialize.setAttribute("username", "john_the_springer");
 
         // when
-        DBObject dbObject = convertToDBObject(toSerialize);
-        MongoSession deserialized = convertToSession(dbObject);
+        Document serialized = convertToDocument(toSerialize);
+        MongoSession deserialized = convertToSession(serialized);
 
         // then
         assertThat(deserialized).usingRecursiveComparison().isEqualTo(toSerialize);
@@ -60,7 +60,7 @@ public abstract class AbstractMongoSessionConverterTests {
         toSerialize.setAttribute("SPRING_SECURITY_CONTEXT", context);
 
         // when
-        DBObject serialized = convertToDBObject(toSerialize);
+        Document serialized = convertToDocument(toSerialize);
         MongoSession deserialized = convertToSession(serialized);
 
         // then
@@ -85,10 +85,10 @@ public abstract class AbstractMongoSessionConverterTests {
         toSerialize.setAttribute(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, principalName);
 
         // when
-        DBObject dbObject = convertToDBObject(toSerialize);
+        Document document = convertToDocument(toSerialize);
 
         // then
-        assertThat(dbObject.get("principal")).isEqualTo(principalName);
+        assertThat(document.get("principal")).isEqualTo(principalName);
     }
 
     @Test
@@ -102,10 +102,10 @@ public abstract class AbstractMongoSessionConverterTests {
         toSerialize.setAttribute("SPRING_SECURITY_CONTEXT", context);
 
         // when
-        DBObject dbObject = convertToDBObject(toSerialize);
+        Document document = convertToDocument(toSerialize);
 
         // then
-        assertThat(dbObject.get("principal")).isEqualTo(principalName);
+        assertThat(document.get("principal")).isEqualTo(principalName);
     }
 
     @Test
@@ -113,8 +113,7 @@ public abstract class AbstractMongoSessionConverterTests {
 
         // given
         MongoSession toSerialize = new MongoSession();
-        DBObject dbObject = convertToDBObject(toSerialize);
-        Document document = new Document(dbObject.toMap());
+        Document document = convertToDocument(toSerialize);
         document.remove("interval");
 
         // when
@@ -124,13 +123,13 @@ public abstract class AbstractMongoSessionConverterTests {
         assertThat(convertedSession.getMaxInactiveInterval()).isEqualTo(Duration.ofMinutes(30));
     }
 
-    @Nullable MongoSession convertToSession(DBObject session) {
+    @Nullable MongoSession convertToSession(Document session) {
         return (MongoSession) getMongoSessionConverter()
-                .convert(session, TypeDescriptor.valueOf(DBObject.class), TypeDescriptor.valueOf(MongoSession.class));
+                .convert(session, TypeDescriptor.valueOf(Document.class), TypeDescriptor.valueOf(MongoSession.class));
     }
 
-    @Nullable DBObject convertToDBObject(MongoSession session) {
-        return (DBObject) getMongoSessionConverter()
-                .convert(session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(DBObject.class));
+    @Nullable Document convertToDocument(MongoSession session) {
+        return (Document) getMongoSessionConverter()
+                .convert(session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(Document.class));
     }
 }

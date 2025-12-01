@@ -26,8 +26,6 @@ import static org.mockito.BDDMockito.mock;
 import static org.mockito.BDDMockito.times;
 import static org.mockito.BDDMockito.verify;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.mongodb.client.result.DeleteResult;
 import java.time.Duration;
 import java.time.Instant;
@@ -100,10 +98,10 @@ class ReactiveMongoSessionRepositoryTests {
 
         // given
         MongoSession session = new MongoSession();
-        BasicDBObject dbSession = new BasicDBObject();
+        Document dbSession = new Document();
 
         given(this.converter.convert(
-                        session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(DBObject.class)))
+                        session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(Document.class)))
                 .willReturn(dbSession);
 
         given(this.mongoOperations.save(dbSession, "sessions")).willReturn(Mono.just(dbSession));
