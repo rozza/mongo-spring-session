@@ -15,12 +15,8 @@
  * limitations under the License.
  */
 
-/**
- * Spring Session MongoDB support.
- *
- * @author Greg Turnquist
- */
+/** Spring Session MongoDB web annotations. */
 @NullMarked
-package org.mongodb.spring.session;
+package org.mongodb.spring.session.config.annotation.web.http;
 
 import org.jspecify.annotations.NullMarked;

@@ -28,6 +28,7 @@ buildscript {
 plugins {
     id("eclipse")
     id("idea")
+    id("checkstyle")
     id("java-library")
     id("maven-publish")
     id("signing")
@@ -145,6 +146,7 @@ testlogger {
 // Build Config
 
 buildConfig {
+    className("MongoSpringSessionVersion")
     useJavaOutput()
     packageName("org.mongodb.spring.session.internal")
     buildConfigField("NAME", provider { project.name })

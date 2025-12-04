@@ -72,7 +72,6 @@ class MongoDbDeleteJackson2SessionVerificationTest {
     void logoutShouldDeleteOldSessionFromMongoDB() {
 
         // 1. Login and capture the SESSION cookie value.
-        // @formatter:off
         FluxExchangeResult<String> loginResult = this.client
                 .post()
                 .uri("/login")
@@ -80,7 +79,6 @@ class MongoDbDeleteJackson2SessionVerificationTest {
                 .body(BodyInserters.fromFormData("username", "admin").with("password", "password"))
                 .exchange()
                 .returnResult(String.class);
-        // @formatter:on
 
         AssertionsForClassTypes.assertThat(loginResult.getResponseHeaders().getLocation())
                 .isEqualTo(URI.create("/"));
@@ -89,7 +87,6 @@ class MongoDbDeleteJackson2SessionVerificationTest {
                 loginResult.getResponseCookies().getFirst("SESSION").getValue();
 
         // 2. Fetch a protected resource using the SESSION cookie.
-        // @formatter:off
         this.client
                 .get()
                 .uri("/hello")
@@ -102,10 +99,8 @@ class MongoDbDeleteJackson2SessionVerificationTest {
                 .as(StepVerifier::create)
                 .expectNext("HelloWorld")
                 .verifyComplete();
-        // @formatter:on
 
         // 3. Logout using the SESSION cookie, and capture the new SESSION cookie.
-        // @formatter:off
         String newSessionId = this.client
                 .post()
                 .uri("/logout")
@@ -117,12 +112,10 @@ class MongoDbDeleteJackson2SessionVerificationTest {
                 .getResponseCookies()
                 .getFirst("SESSION")
                 .getValue();
-        // @formatter:on
 
         AssertionsForClassTypes.assertThat(newSessionId).isNotEqualTo(originalSessionId);
 
         // 4. Verify the new SESSION cookie is not yet authorized.
-        // @formatter:off
         this.client
                 .get()
                 .uri("/hello")
@@ -133,10 +126,8 @@ class MongoDbDeleteJackson2SessionVerificationTest {
                 .expectHeader()
                 .value(HttpHeaders.LOCATION, (value) -> AssertionsForClassTypes.assertThat(value)
                         .isEqualTo("/login"));
-        // @formatter:on
 
         // 5. Verify the original SESSION cookie no longer works.
-        // @formatter:off
         this.client
                 .get()
                 .uri("/hello")
@@ -147,7 +138,6 @@ class MongoDbDeleteJackson2SessionVerificationTest {
                 .expectHeader()
                 .value(HttpHeaders.LOCATION, (value) -> AssertionsForClassTypes.assertThat(value)
                         .isEqualTo("/login"));
-        // @formatter:on
     }
 
     @RestController
@@ -164,24 +154,20 @@ class MongoDbDeleteJackson2SessionVerificationTest {
     static class SecurityConfig {
 
         @Bean
-        SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-            // @formatter:off
+        SecurityWebFilterChain securityWebFilterChain(final ServerHttpSecurity http) {
             return http.logout(Customizer.withDefaults())
                     .formLogin(Customizer.withDefaults())
                     .csrf((csrf) -> csrf.disable())
                     .authorizeExchange((ae) -> ae.anyExchange().authenticated())
                     .build();
-            // @formatter:on
         }
 
         @Bean
         MapReactiveUserDetailsService userDetailsService() {
-            // @formatter:off
             return new MapReactiveUserDetailsService(User.withUsername("admin")
                     .password("{noop}password")
                     .roles("USER,ADMIN")
                     .build());
-            // @formatter:on
         }
 
         @Bean

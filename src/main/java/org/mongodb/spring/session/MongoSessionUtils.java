@@ -35,13 +35,15 @@ final class MongoSessionUtils {
 
     private MongoSessionUtils() {}
 
-    @Nullable static Document convertToDocument(AbstractMongoSessionConverter mongoSessionConverter, MongoSession session) {
+    @Nullable static Document convertToDocument(
+            final AbstractMongoSessionConverter mongoSessionConverter, final MongoSession session) {
 
         return (Document) mongoSessionConverter.convert(
                 session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(Document.class));
     }
 
-    @Nullable static MongoSession convertToSession(AbstractMongoSessionConverter mongoSessionConverter, Document session) {
+    @Nullable static MongoSession convertToSession(
+            final AbstractMongoSessionConverter mongoSessionConverter, final Document session) {
 
         return (MongoSession) mongoSessionConverter.convert(
                 session, TypeDescriptor.valueOf(Document.class), TypeDescriptor.valueOf(MongoSession.class));

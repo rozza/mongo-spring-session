@@ -74,7 +74,7 @@ public final class MongoSession implements Session {
      * @param sessionId the session id to use
      * @since 3.2
      */
-    public MongoSession(String sessionId) {
+    public MongoSession(final String sessionId) {
         this(sessionId, MapSession.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS);
     }
 
@@ -88,7 +88,7 @@ public final class MongoSession implements Session {
      *
      * @param maxInactiveIntervalInSeconds the max inactive interval in seconds
      */
-    public MongoSession(long maxInactiveIntervalInSeconds) {
+    public MongoSession(final long maxInactiveIntervalInSeconds) {
         this(UuidSessionIdGenerator.getInstance().generate(), maxInactiveIntervalInSeconds);
     }
 
@@ -98,7 +98,7 @@ public final class MongoSession implements Session {
      * @param id the session id to use
      * @param maxInactiveIntervalInSeconds the max inactive interval in seconds
      */
-    public MongoSession(String id, long maxInactiveIntervalInSeconds) {
+    public MongoSession(final String id, final long maxInactiveIntervalInSeconds) {
         this.id = id;
         this.originalSessionId = id;
         this.intervalSeconds = maxInactiveIntervalInSeconds;
@@ -111,7 +111,7 @@ public final class MongoSession implements Session {
      * @param sessionIdGenerator the {@link SessionIdGenerator} to use
      * @since 3.2
      */
-    public MongoSession(SessionIdGenerator sessionIdGenerator) {
+    public MongoSession(final SessionIdGenerator sessionIdGenerator) {
         this(sessionIdGenerator.generate(), MapSession.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS);
         this.sessionIdGenerator = sessionIdGenerator;
     }
@@ -123,16 +123,16 @@ public final class MongoSession implements Session {
      * @param maxInactiveIntervalInSeconds the max inactive interval in seconds
      * @since 3.2
      */
-    MongoSession(SessionIdGenerator sessionIdGenerator, long maxInactiveIntervalInSeconds) {
+    MongoSession(final SessionIdGenerator sessionIdGenerator, final long maxInactiveIntervalInSeconds) {
         this(sessionIdGenerator.generate(), maxInactiveIntervalInSeconds);
         this.sessionIdGenerator = sessionIdGenerator;
     }
 
-    static String coverDot(String attributeName) {
+    static String coverDot(final String attributeName) {
         return attributeName.replace('.', DOT_COVER_CHAR);
     }
 
-    static String uncoverDot(String attributeName) {
+    static String uncoverDot(final String attributeName) {
         return attributeName.replace(DOT_COVER_CHAR, '.');
     }
 
@@ -146,7 +146,7 @@ public final class MongoSession implements Session {
 
     @Override
     @Nullable @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
-    public <T> T getAttribute(String attributeName) {
+    public <T> T getAttribute(final String attributeName) {
         return (T) this.attrs.get(coverDot(attributeName));
     }
 
@@ -156,7 +156,7 @@ public final class MongoSession implements Session {
     }
 
     @Override
-    public void setAttribute(String attributeName, Object attributeValue) {
+    public void setAttribute(final String attributeName, final Object attributeValue) {
         if (attributeValue == null) {
             removeAttribute(coverDot(attributeName));
         } else {
@@ -165,7 +165,7 @@ public final class MongoSession implements Session {
     }
 
     @Override
-    public void removeAttribute(String attributeName) {
+    public void removeAttribute(final String attributeName) {
         this.attrs.remove(coverDot(attributeName));
     }
 
@@ -174,7 +174,7 @@ public final class MongoSession implements Session {
         return Instant.ofEpochMilli(this.createdMillis);
     }
 
-    void setCreationTime(long created) {
+    void setCreationTime(final long created) {
         this.createdMillis = created;
     }
 
@@ -184,7 +184,7 @@ public final class MongoSession implements Session {
     }
 
     @Override
-    public void setLastAccessedTime(Instant lastAccessedTime) {
+    public void setLastAccessedTime(final Instant lastAccessedTime) {
         this.accessedMillis = lastAccessedTime.toEpochMilli();
         this.expireAt = Date.from(lastAccessedTime.plus(Duration.ofSeconds(this.intervalSeconds)));
     }
@@ -195,7 +195,7 @@ public final class MongoSession implements Session {
     }
 
     @Override
-    public void setMaxInactiveInterval(Duration interval) {
+    public void setMaxInactiveInterval(final Duration interval) {
         this.intervalSeconds = interval.toSeconds();
     }
 
@@ -205,7 +205,7 @@ public final class MongoSession implements Session {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
 
         if (this == o) {
             return true;
@@ -249,7 +249,7 @@ public final class MongoSession implements Session {
      * @param id the id to set
      * @since 3.2
      */
-    void setId(String id) {
+    void setId(final String id) {
         this.id = id;
     }
 
@@ -259,7 +259,7 @@ public final class MongoSession implements Session {
      * @param sessionIdGenerator the {@link SessionIdGenerator} to use
      * @since 3.2
      */
-    void setSessionIdGenerator(SessionIdGenerator sessionIdGenerator) {
+    void setSessionIdGenerator(final SessionIdGenerator sessionIdGenerator) {
         Assert.notNull(sessionIdGenerator, "sessionIdGenerator cannot be null");
         this.sessionIdGenerator = sessionIdGenerator;
     }

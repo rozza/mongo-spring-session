@@ -18,19 +18,18 @@
 package org.mongodb.spring.session;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mongodb.spring.session.MongoSessionUtils.convertToDocument;
 
 import java.time.Duration;
 import org.bson.Document;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.session.FindByIndexNameSessionRepository;
 
 /** @author Greg Turnquist */
-public abstract class AbstractMongoSessionConverterTests {
+public abstract class AbstractMongoSessionConverterTest {
 
     abstract AbstractMongoSessionConverter getMongoSessionConverter();
 
@@ -123,12 +122,12 @@ public abstract class AbstractMongoSessionConverterTests {
         assertThat(convertedSession.getMaxInactiveInterval()).isEqualTo(Duration.ofMinutes(30));
     }
 
-    @Nullable MongoSession convertToSession(Document session) {
+    @Nullable MongoSession convertToSession(final Document session) {
         return (MongoSession) getMongoSessionConverter()
                 .convert(session, TypeDescriptor.valueOf(Document.class), TypeDescriptor.valueOf(MongoSession.class));
     }
 
-    @Nullable Document convertToDocument(MongoSession session) {
+    @Nullable Document convertToDocument(final MongoSession session) {
         return (Document) getMongoSessionConverter()
                 .convert(session, TypeDescriptor.valueOf(MongoSession.class), TypeDescriptor.valueOf(Document.class));
     }

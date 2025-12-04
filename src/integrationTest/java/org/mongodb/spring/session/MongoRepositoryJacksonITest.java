@@ -55,7 +55,6 @@ class MongoRepositoryJacksonITest extends AbstractMongoRepositoryITest {
         assertThat(findByCartId.keySet()).containsOnly(toSave.getId());
     }
 
-    // tag::sample[]
     @Configuration
     @EnableMongoHttpSession
     @SuppressWarnings("SuppressWarningsDeprecated")
@@ -66,6 +65,4 @@ class MongoRepositoryJacksonITest extends AbstractMongoRepositoryITest {
             return new JacksonMongoSessionConverter(singletonList(new GeoJacksonModule()));
         }
     }
-    // end::sample[]
-
 }

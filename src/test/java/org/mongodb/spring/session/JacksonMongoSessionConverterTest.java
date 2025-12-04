@@ -33,7 +33,7 @@ import tools.jackson.databind.ObjectMapper;
  * @author Jakub Kubrynski
  * @author Greg Turnquist
  */
-class JacksonMongoSessionConverterTests extends AbstractMongoSessionConverterTests {
+class JacksonMongoSessionConverterTest extends AbstractMongoSessionConverterTest {
 
     JacksonMongoSessionConverter mongoSessionConverter = new JacksonMongoSessionConverter();
 

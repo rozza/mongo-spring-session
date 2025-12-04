@@ -74,7 +74,7 @@ public class Jackson2MongoSessionConverter extends AbstractMongoSessionConverter
      *
      * @param modules iterable of modules to register
      */
-    public Jackson2MongoSessionConverter(Iterable<Module> modules) {
+    public Jackson2MongoSessionConverter(final Iterable<Module> modules) {
 
         this.objectMapper = buildObjectMapper();
         this.objectMapper.registerModules(modules);
@@ -85,14 +85,14 @@ public class Jackson2MongoSessionConverter extends AbstractMongoSessionConverter
      *
      * @param objectMapper the object mapper to use; must not be {@code null}
      */
-    public Jackson2MongoSessionConverter(ObjectMapper objectMapper) {
+    public Jackson2MongoSessionConverter(final ObjectMapper objectMapper) {
 
         Assert.notNull(objectMapper, "ObjectMapper can NOT be null!");
         this.objectMapper = objectMapper;
     }
 
     @Override
-    @Nullable protected Query getQueryForIndex(String indexName, Object indexValue) {
+    @Nullable protected Query getQueryForIndex(final String indexName, final Object indexValue) {
 
         if (FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME.equals(indexName)) {
             return Query.query(Criteria.where(PRINCIPAL_FIELD_NAME).is(indexValue));
@@ -125,7 +125,7 @@ public class Jackson2MongoSessionConverter extends AbstractMongoSessionConverter
     }
 
     @Override
-    protected Document convert(MongoSession source) {
+    protected Document convert(final MongoSession source) {
 
         try {
             Document dbSession = Document.parse(this.objectMapper.writeValueAsString(source));
@@ -140,7 +140,7 @@ public class Jackson2MongoSessionConverter extends AbstractMongoSessionConverter
     }
 
     @Override
-    @Nullable protected MongoSession convert(Document source) {
+    @Nullable protected MongoSession convert(final Document source) {
 
         Date expireAt = (Date) source.remove(EXPIRE_AT_FIELD_NAME);
         source.remove("originalSessionId");
@@ -159,25 +159,22 @@ public class Jackson2MongoSessionConverter extends AbstractMongoSessionConverter
 
     /** Used to whitelist {@link MongoSession} for {@link SecurityJackson2Modules}. */
     @SuppressWarnings("unused")
-    private static class MongoSessionMixin {
+    private static final class MongoSessionMixin {
 
         @JsonCreator
         MongoSessionMixin(
-                @JsonProperty("_id") String id, @JsonProperty("intervalSeconds") long maxInactiveIntervalInSeconds) {}
+                @JsonProperty("_id") final String id,
+                @JsonProperty("intervalSeconds") final long maxInactiveIntervalInSeconds) {}
     }
 
     /** Used to whitelist {@link HashMap} for {@link SecurityJackson2Modules}. */
-    private static class HashMapMixin {
+    private static final class HashMapMixin {}
 
-        // Nothing special
-
-    }
-
-    private static class MongoIdNamingStrategy extends PropertyNamingStrategies.NamingBase {
+    private static final class MongoIdNamingStrategy extends PropertyNamingStrategies.NamingBase {
         private static final long serialVersionUID = 2L;
 
         @Override
-        public String translate(String propertyName) {
+        public String translate(final String propertyName) {
 
             return switch (propertyName) {
                 case "id" -> "_id";

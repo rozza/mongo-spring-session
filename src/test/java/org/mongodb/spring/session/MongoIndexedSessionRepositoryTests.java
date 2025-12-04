@@ -276,7 +276,7 @@ class MongoIndexedSessionRepositoryTests {
 
         private final String id;
 
-        FixedSessionIdGenerator(String id) {
+        FixedSessionIdGenerator(final String id) {
             this.id = id;
         }
 

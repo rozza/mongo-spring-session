@@ -61,7 +61,7 @@ public abstract class AbstractClassLoaderTest<T> extends AbstractITest {
         AssertionsForClassTypes.assertThat(classLoader).isEqualTo(this.applicationContext.getClassLoader());
     }
 
-    private static Object extractField(Class<?> clazz, String fieldName, Object obj) {
+    private static Object extractField(final Class<?> clazz, final String fieldName, final Object obj) {
 
         Field field = ReflectionUtils.findField(clazz, fieldName);
         ReflectionUtils.makeAccessible(field);

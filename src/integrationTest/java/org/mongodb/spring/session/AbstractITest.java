@@ -40,15 +40,8 @@ public abstract class AbstractITest {
 
     protected SecurityContext changedContext;
 
-    // @Autowired(required = false)
-    // protected SessionEventRegistry registry;
-
     @BeforeEach
     void setup() {
-
-        // if (this.registry != null) {
-        // this.registry.clear();
-        // }
 
         this.context = SecurityContextHolder.createEmptyContext();
         this.context.setAuthentication(new UsernamePasswordAuthenticationToken(

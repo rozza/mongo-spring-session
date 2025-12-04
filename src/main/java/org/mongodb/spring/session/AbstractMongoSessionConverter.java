@@ -69,7 +69,7 @@ public abstract class AbstractMongoSessionConverter implements GenericConverter 
      *
      * @param sessionCollectionIndexes {@link IndexOperations} to use
      */
-    protected void ensureIndexes(IndexOperations sessionCollectionIndexes) {
+    protected void ensureIndexes(final IndexOperations sessionCollectionIndexes) {
 
         for (IndexInfo info : sessionCollectionIndexes.getIndexInfo()) {
             if (EXPIRE_AT_FIELD_NAME.equals(info.getName())) {
@@ -98,7 +98,7 @@ public abstract class AbstractMongoSessionConverter implements GenericConverter 
         }
     }
 
-    @Nullable protected String extractPrincipal(MongoSession expiringSession) {
+    @Nullable protected String extractPrincipal(final MongoSession expiringSession) {
 
         return this.indexResolver
                 .resolveIndexesFor(expiringSession)
@@ -112,7 +112,8 @@ public abstract class AbstractMongoSessionConverter implements GenericConverter 
 
     @SuppressWarnings("unchecked")
     @Override
-    @Nullable public Object convert(@Nullable Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
+    @Nullable public Object convert(
+            @Nullable final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
 
         if (source == null) {
             return null;
@@ -134,7 +135,7 @@ public abstract class AbstractMongoSessionConverter implements GenericConverter 
      *
      * @param indexResolver the index resolver to use; must not be {@code null}
      */
-    public void setIndexResolver(IndexResolver<Session> indexResolver) {
+    public void setIndexResolver(final IndexResolver<Session> indexResolver) {
         Assert.notNull(indexResolver, "indexResolver must not be null");
         this.indexResolver = indexResolver;
     }

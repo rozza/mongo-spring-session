@@ -62,7 +62,7 @@ public class ReactiveMongoSessionRepository
     /** The default collection name for storing session. */
     public static final String DEFAULT_COLLECTION_NAME = "sessions";
 
-    private static final Log logger = LogFactory.getLog(ReactiveMongoSessionRepository.class);
+    private static final Log LOGGER = LogFactory.getLog(ReactiveMongoSessionRepository.class);
 
     private final ReactiveMongoOperations mongoOperations;
 
@@ -84,7 +84,7 @@ public class ReactiveMongoSessionRepository
      *
      * @param mongoOperations the ReactiveMongoOperations to use for session persistence
      */
-    public ReactiveMongoSessionRepository(ReactiveMongoOperations mongoOperations) {
+    public ReactiveMongoSessionRepository(final ReactiveMongoOperations mongoOperations) {
         this.mongoOperations = mongoOperations;
     }
 
@@ -99,7 +99,6 @@ public class ReactiveMongoSessionRepository
      */
     @Override
     public Mono<MongoSession> createSession() {
-        // @formatter:off
         return Mono.fromSupplier(() -> this.sessionIdGenerator.generate())
                 .zipWith(Mono.just(this.defaultMaxInactiveInterval.toSeconds()))
                 .map((tuple) -> new MongoSession(tuple.getT1(), tuple.getT2()))
@@ -109,49 +108,47 @@ public class ReactiveMongoSessionRepository
                 .switchIfEmpty(Mono.just(new MongoSession(this.sessionIdGenerator)))
                 .subscribeOn(Schedulers.boundedElastic())
                 .publishOn(Schedulers.parallel());
-        // @formatter:on
     }
 
     @Override
-    public Mono<Void> save(MongoSession session) {
+    public Mono<Void> save(final MongoSession session) {
 
-        return Mono //
-                .justOrEmpty(MongoSessionUtils.convertToDocument(this.mongoSessionConverter, session)) //
+        return Mono.justOrEmpty(MongoSessionUtils.convertToDocument(this.mongoSessionConverter, session))
                 .flatMap((document) -> {
                     if (session.hasChangedSessionId()) {
 
                         return this.mongoOperations
                                 .remove(
                                         Query.query(Criteria.where("_id").is(session.getOriginalSessionId())),
-                                        this.collectionName) //
+                                        this.collectionName)
                                 .then(this.mongoOperations.save(document, this.collectionName));
                     } else {
 
                         return this.mongoOperations.save(document, this.collectionName);
                     }
-                }) //
+                })
                 .then();
     }
 
     @Override
-    public Mono<MongoSession> findById(String id) {
+    public Mono<MongoSession> findById(final String id) {
 
-        return findSession(id) //
-                .map((document) -> MongoSessionUtils.convertToSession(this.mongoSessionConverter, document)) //
-                .filter((mongoSession) -> !mongoSession.isExpired()) //
+        return findSession(id)
+                .map((document) -> MongoSessionUtils.convertToSession(this.mongoSessionConverter, document))
+                .filter((mongoSession) -> !mongoSession.isExpired())
                 .doOnNext((mongoSession) -> mongoSession.setSessionIdGenerator(this.sessionIdGenerator))
                 .switchIfEmpty(Mono.defer(() -> this.deleteById(id).then(Mono.empty())));
     }
 
     @Override
-    public Mono<Void> deleteById(String id) {
+    public Mono<Void> deleteById(final String id) {
 
-        return findSession(id) //
+        return findSession(id)
                 .flatMap((document) -> this.mongoOperations
-                        .remove(document, this.collectionName) //
-                        .then(Mono.just(document))) //
-                .map((document) -> MongoSessionUtils.convertToSession(this.mongoSessionConverter, document)) //
-                .doOnNext((mongoSession) -> publishEvent(new SessionDeletedEvent(this, mongoSession))) //
+                        .remove(document, this.collectionName)
+                        .then(Mono.just(document)))
+                .map((document) -> MongoSessionUtils.convertToSession(this.mongoSessionConverter, document))
+                .doOnNext((mongoSession) -> publishEvent(new SessionDeletedEvent(this, mongoSession)))
                 .then();
     }
 
@@ -169,23 +166,23 @@ public class ReactiveMongoSessionRepository
         }
     }
 
-    private Mono<Document> findSession(String id) {
+    private Mono<Document> findSession(final String id) {
         return this.mongoOperations.findById(id, Document.class, this.collectionName);
     }
 
     @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher eventPublisher) {
+    public void setApplicationEventPublisher(final ApplicationEventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
     }
 
-    private void publishEvent(ApplicationEvent event) {
+    private void publishEvent(final ApplicationEvent event) {
         if (this.eventPublisher == null) {
-            logger.error("Error publishing " + event + ". No event publisher set.");
+            LOGGER.error("Error publishing " + event + ". No event publisher set.");
         } else {
             try {
                 this.eventPublisher.publishEvent(event);
             } catch (Throwable ex) {
-                logger.error("Error publishing " + event + ".", ex);
+                LOGGER.error("Error publishing " + event + ".", ex);
             }
         }
     }
@@ -196,7 +193,7 @@ public class ReactiveMongoSessionRepository
      *
      * @param defaultMaxInactiveInterval the default maxInactiveInterval
      */
-    public void setDefaultMaxInactiveInterval(Duration defaultMaxInactiveInterval) {
+    public void setDefaultMaxInactiveInterval(final Duration defaultMaxInactiveInterval) {
         Assert.notNull(defaultMaxInactiveInterval, "defaultMaxInactiveInterval must not be null");
         this.defaultMaxInactiveInterval = defaultMaxInactiveInterval;
     }
@@ -210,7 +207,7 @@ public class ReactiveMongoSessionRepository
      */
     @Deprecated(since = "3.0.0")
     @SuppressWarnings("InlineMeSuggester")
-    public void setMaxInactiveIntervalInSeconds(Integer defaultMaxInactiveInterval) {
+    public void setMaxInactiveIntervalInSeconds(final Integer defaultMaxInactiveInterval) {
         setDefaultMaxInactiveInterval(Duration.ofSeconds(defaultMaxInactiveInterval));
     }
 
@@ -255,7 +252,7 @@ public class ReactiveMongoSessionRepository
      *
      * @param sessionIdGenerator the session id generator
      */
-    public void setSessionIdGenerator(SessionIdGenerator sessionIdGenerator) {
+    public void setSessionIdGenerator(final SessionIdGenerator sessionIdGenerator) {
         Assert.notNull(sessionIdGenerator, "sessionIdGenerator cannot be null");
         this.sessionIdGenerator = sessionIdGenerator;
     }

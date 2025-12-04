@@ -29,7 +29,7 @@ import org.springframework.core.serializer.support.SerializingConverter;
  * @author Rob Winch
  * @author Greg Turnquist
  */
-class JdkMongoSessionConverterTests extends AbstractMongoSessionConverterTests {
+class JdkMongoSessionConverterTest extends AbstractMongoSessionConverterTest {
 
     Duration inactiveInterval = Duration.ofMinutes(30);
 

@@ -34,7 +34,7 @@ import org.springframework.util.ReflectionUtils;
  * @author Greg Turnquist
  */
 @SuppressWarnings("removal")
-class Jackson2MongoSessionConverterTests extends AbstractMongoSessionConverterTests {
+class Jackson2MongoSessionConverterTest extends AbstractMongoSessionConverterTest {
 
     Jackson2MongoSessionConverter mongoSessionConverter = new Jackson2MongoSessionConverter();
 

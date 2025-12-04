@@ -76,12 +76,9 @@ class MongoDbLogoutVerificationTest {
         FluxExchangeResult<String> loginResult = this.client
                 .post()
                 .uri("/login")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED) //
-                .body(
-                        BodyInserters //
-                                .fromFormData("username", "admin") //
-                                .with("password", "password")) //
-                .exchange() //
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData("username", "admin").with("password", "password"))
+                .exchange()
                 .returnResult(String.class);
 
         AssertionsForClassTypes.assertThat(loginResult.getResponseHeaders().getLocation())
@@ -94,26 +91,26 @@ class MongoDbLogoutVerificationTest {
 
         this.client
                 .get()
-                .uri("/hello") //
-                .cookie("SESSION", originalSessionId) //
-                .exchange() //
+                .uri("/hello")
+                .cookie("SESSION", originalSessionId)
+                .exchange()
                 .expectStatus()
-                .isOk() //
+                .isOk()
                 .returnResult(String.class)
-                .getResponseBody() //
-                .as(StepVerifier::create) //
-                .expectNext("HelloWorld") //
+                .getResponseBody()
+                .as(StepVerifier::create)
+                .expectNext("HelloWorld")
                 .verifyComplete();
 
         // 3. Logout using the SESSION cookie, and capture the new SESSION cookie.
 
         String newSessionId = this.client
                 .post()
-                .uri("/logout") //
-                .cookie("SESSION", originalSessionId) //
-                .exchange() //
+                .uri("/logout")
+                .cookie("SESSION", originalSessionId)
+                .exchange()
                 .expectStatus()
-                .isFound() //
+                .isFound()
                 .returnResult(String.class)
                 .getResponseCookies()
                 .getFirst("SESSION")
@@ -125,11 +122,11 @@ class MongoDbLogoutVerificationTest {
 
         this.client
                 .get()
-                .uri("/hello") //
-                .cookie("SESSION", newSessionId) //
-                .exchange() //
+                .uri("/hello")
+                .cookie("SESSION", newSessionId)
+                .exchange()
                 .expectStatus()
-                .isFound() //
+                .isFound()
                 .expectHeader()
                 .value(HttpHeaders.LOCATION, (value) -> AssertionsForClassTypes.assertThat(value)
                         .isEqualTo("/login"));
@@ -138,11 +135,11 @@ class MongoDbLogoutVerificationTest {
 
         this.client
                 .get()
-                .uri("/hello") //
-                .cookie("SESSION", originalSessionId) //
-                .exchange() //
+                .uri("/hello")
+                .cookie("SESSION", originalSessionId)
+                .exchange()
                 .expectStatus()
-                .isFound() //
+                .isFound()
                 .expectHeader()
                 .value(HttpHeaders.LOCATION, (value) -> AssertionsForClassTypes.assertThat(value)
                         .isEqualTo("/login"));
@@ -162,24 +159,20 @@ class MongoDbLogoutVerificationTest {
     static class SecurityConfig {
 
         @Bean
-        SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-            // @formatter:off
+        SecurityWebFilterChain securityWebFilterChain(final ServerHttpSecurity http) {
             return http.logout(Customizer.withDefaults())
                     .formLogin(Customizer.withDefaults())
                     .csrf((csrf) -> csrf.disable())
                     .authorizeExchange((ae) -> ae.anyExchange().authenticated())
                     .build();
-            // @formatter:on
         }
 
         @Bean
         MapReactiveUserDetailsService userDetailsService() {
-            // @formatter:off
             return new MapReactiveUserDetailsService(User.withUsername("admin")
                     .password("{noop}password")
                     .roles("USER,ADMIN")
                     .build());
-            // @formatter:on
         }
     }
 

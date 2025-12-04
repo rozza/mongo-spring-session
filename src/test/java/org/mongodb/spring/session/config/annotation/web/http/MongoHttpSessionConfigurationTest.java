@@ -53,7 +53,7 @@ import org.springframework.test.util.ReflectionTestUtils;
  * @author Eddú Meléndez
  * @author Vedran Pavic
  */
-class MongoHttpSessionConfigurationTests {
+class MongoHttpSessionConfigurationTest {
 
     private static final String COLLECTION_NAME = "testSessions";
 
@@ -221,7 +221,7 @@ class MongoHttpSessionConfigurationTests {
         assertThat(sessionRepository).extracting("sessionIdGenerator").isInstanceOf(UuidSessionIdGenerator.class);
     }
 
-    private void registerAndRefresh(Class<?>... annotatedClasses) {
+    private void registerAndRefresh(final Class<?>... annotatedClasses) {
 
         this.context.register(annotatedClasses);
         this.context.refresh();

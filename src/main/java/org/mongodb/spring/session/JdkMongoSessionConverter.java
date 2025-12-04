@@ -69,7 +69,7 @@ public class JdkMongoSessionConverter extends AbstractMongoSessionConverter {
      *
      * @param maxInactiveInterval the default max inactive interval used when deserializing sessions
      */
-    public JdkMongoSessionConverter(Duration maxInactiveInterval) {
+    public JdkMongoSessionConverter(final Duration maxInactiveInterval) {
         this(new SerializingConverter(), new DeserializingConverter(), maxInactiveInterval);
     }
 
@@ -82,9 +82,9 @@ public class JdkMongoSessionConverter extends AbstractMongoSessionConverter {
      *     {@code null}
      */
     public JdkMongoSessionConverter(
-            Converter<Object, byte[]> serializer,
-            Converter<byte[], Object> deserializer,
-            Duration maxInactiveInterval) {
+            final Converter<Object, byte[]> serializer,
+            final Converter<byte[], Object> deserializer,
+            final Duration maxInactiveInterval) {
 
         Assert.notNull(serializer, "serializer cannot be null");
         Assert.notNull(deserializer, "deserializer cannot be null");
@@ -96,7 +96,7 @@ public class JdkMongoSessionConverter extends AbstractMongoSessionConverter {
     }
 
     @Override
-    @Nullable public Query getQueryForIndex(String indexName, Object indexValue) {
+    @Nullable public Query getQueryForIndex(final String indexName, final Object indexValue) {
 
         if (FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME.equals(indexName)) {
             return Query.query(Criteria.where(PRINCIPAL_FIELD_NAME).is(indexValue));
@@ -106,7 +106,7 @@ public class JdkMongoSessionConverter extends AbstractMongoSessionConverter {
     }
 
     @Override
-    protected Document convert(MongoSession session) {
+    protected Document convert(final MongoSession session) {
 
         Document dbSession = new Document();
 
@@ -123,7 +123,7 @@ public class JdkMongoSessionConverter extends AbstractMongoSessionConverter {
 
     @Override
     @SuppressWarnings("NullAway")
-    protected MongoSession convert(Document sessionWrapper) {
+    protected MongoSession convert(final Document sessionWrapper) {
 
         Object maxInterval = sessionWrapper.getOrDefault(MAX_INTERVAL, this.maxInactiveInterval);
 
@@ -155,7 +155,7 @@ public class JdkMongoSessionConverter extends AbstractMongoSessionConverter {
         return session;
     }
 
-    private byte[] serializeAttributes(Session session) {
+    private byte[] serializeAttributes(final Session session) {
 
         Map<String, Object> attributes = new HashMap<>();
 
@@ -171,7 +171,7 @@ public class JdkMongoSessionConverter extends AbstractMongoSessionConverter {
     }
 
     @SuppressWarnings({"unchecked", "NullAway"})
-    private void deserializeAttributes(Document sessionWrapper, Session session) {
+    private void deserializeAttributes(final Document sessionWrapper, final Session session) {
 
         Object sessionAttributes = sessionWrapper.get(ATTRIBUTES);
 

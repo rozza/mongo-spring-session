@@ -60,7 +60,7 @@ import org.springframework.web.server.session.WebSessionManager;
  * @author Greg Turnquist
  * @author Vedran Pavic
  */
-class ReactiveMongoWebSessionConfigurationTests {
+class ReactiveMongoWebSessionConfigurationTest {
 
     private AnnotationConfigApplicationContext context;
 
@@ -253,7 +253,7 @@ class ReactiveMongoWebSessionConfigurationTests {
         assertThat(sessionRepository).extracting("sessionIdGenerator").isInstanceOf(UuidSessionIdGenerator.class);
     }
 
-    private void registerAndRefresh(Class<?>... annotatedClasses) {
+    private void registerAndRefresh(final Class<?>... annotatedClasses) {
         this.context = new AnnotationConfigApplicationContext();
         this.context.register(annotatedClasses);
         this.context.refresh();
@@ -263,7 +263,7 @@ class ReactiveMongoWebSessionConfigurationTests {
      * Reflectively extract the {@link AbstractMongoSessionConverter} from the {@link ReactiveMongoSessionRepository}.
      * This is to avoid expanding the surface area of the API.
      */
-    private AbstractMongoSessionConverter findMongoSessionConverter(ReactiveMongoSessionRepository repository) {
+    private AbstractMongoSessionConverter findMongoSessionConverter(final ReactiveMongoSessionRepository repository) {
 
         Field field = ReflectionUtils.findField(ReactiveMongoSessionRepository.class, "mongoSessionConverter");
         ReflectionUtils.makeAccessible(field);
@@ -333,7 +333,7 @@ class ReactiveMongoWebSessionConfigurationTests {
         }
 
         @Bean
-        MongoOperations mongoOperations(IndexOperations indexOperations) {
+        MongoOperations mongoOperations(final IndexOperations indexOperations) {
 
             MongoOperations mongoOperations = mock(MongoOperations.class);
             given(mongoOperations.indexOps((String) any())).willReturn(indexOperations);

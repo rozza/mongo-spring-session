@@ -80,7 +80,7 @@ public class ReactiveMongoWebSessionConfiguration
     private SessionIdGenerator sessionIdGenerator = UuidSessionIdGenerator.getInstance();
 
     @Bean
-    public ReactiveMongoSessionRepository reactiveMongoSessionRepository(ReactiveMongoOperations operations) {
+    public ReactiveMongoSessionRepository reactiveMongoSessionRepository(final ReactiveMongoOperations operations) {
 
         ReactiveMongoSessionRepository repository = new ReactiveMongoSessionRepository(operations);
 
@@ -123,13 +123,13 @@ public class ReactiveMongoWebSessionConfiguration
     }
 
     @Autowired(required = false)
-    public void setMongoSessionConverter(AbstractMongoSessionConverter mongoSessionConverter) {
+    public void setMongoSessionConverter(final AbstractMongoSessionConverter mongoSessionConverter) {
         this.mongoSessionConverter = mongoSessionConverter;
     }
 
     @Override
     @SuppressWarnings("NullAway")
-    public void setImportMetadata(AnnotationMetadata importMetadata) {
+    public void setImportMetadata(final AnnotationMetadata importMetadata) {
 
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(
                 importMetadata.getAnnotationAttributes(EnableMongoWebSession.class.getName()));
@@ -147,12 +147,12 @@ public class ReactiveMongoWebSessionConfiguration
     }
 
     @Override
-    public void setBeanClassLoader(ClassLoader classLoader) {
+    public void setBeanClassLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     @Override
-    public void setEmbeddedValueResolver(StringValueResolver embeddedValueResolver) {
+    public void setEmbeddedValueResolver(final StringValueResolver embeddedValueResolver) {
         this.embeddedValueResolver = embeddedValueResolver;
     }
 
@@ -170,7 +170,7 @@ public class ReactiveMongoWebSessionConfiguration
      *
      * @param maxInactiveInterval the max inactive interval to set
      */
-    public void setMaxInactiveInterval(Duration maxInactiveInterval) {
+    public void setMaxInactiveInterval(final Duration maxInactiveInterval) {
         this.maxInactiveInterval = maxInactiveInterval;
     }
 
@@ -182,7 +182,7 @@ public class ReactiveMongoWebSessionConfiguration
      */
     @Deprecated
     @SuppressWarnings("InlineMeSuggester")
-    public void setMaxInactiveIntervalInSeconds(Integer maxInactiveIntervalInSeconds) {
+    public void setMaxInactiveIntervalInSeconds(final Integer maxInactiveIntervalInSeconds) {
         setMaxInactiveInterval(Duration.ofSeconds(maxInactiveIntervalInSeconds));
     }
 
@@ -200,25 +200,25 @@ public class ReactiveMongoWebSessionConfiguration
      *
      * @param collectionName the collection name to set
      */
-    public void setCollectionName(String collectionName) {
+    public void setCollectionName(final String collectionName) {
         this.collectionName = collectionName;
     }
 
     @Autowired(required = false)
     public void setSessionRepositoryCustomizers(
-            ObjectProvider<ReactiveSessionRepositoryCustomizer<ReactiveMongoSessionRepository>>
+            final ObjectProvider<ReactiveSessionRepositoryCustomizer<ReactiveMongoSessionRepository>>
                     sessionRepositoryCustomizers) {
         this.sessionRepositoryCustomizers =
                 sessionRepositoryCustomizers.orderedStream().collect(Collectors.toList());
     }
 
     @Autowired(required = false)
-    public void setIndexResolver(IndexResolver<Session> indexResolver) {
+    public void setIndexResolver(final IndexResolver<Session> indexResolver) {
         this.indexResolver = indexResolver;
     }
 
     @Autowired(required = false)
-    public void setSessionIdGenerator(SessionIdGenerator sessionIdGenerator) {
+    public void setSessionIdGenerator(final SessionIdGenerator sessionIdGenerator) {
         this.sessionIdGenerator = sessionIdGenerator;
     }
 }

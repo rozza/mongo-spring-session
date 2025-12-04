@@ -85,7 +85,7 @@ public class JacksonMongoSessionConverter extends AbstractMongoSessionConverter 
     }
 
     @Override
-    @Nullable protected Query getQueryForIndex(String indexName, Object indexValue) {
+    @Nullable protected Query getQueryForIndex(final String indexName, final Object indexValue) {
 
         if (FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME.equals(indexName)) {
             return Query.query(Criteria.where(PRINCIPAL_FIELD_NAME).is(indexValue));
@@ -153,21 +153,18 @@ public class JacksonMongoSessionConverter extends AbstractMongoSessionConverter 
 
     /** Used to whitelist {@link MongoSession} for {@link SecurityJacksonModules}. */
     @SuppressWarnings("unused")
-    private static class MongoSessionMixin {
+    private static final class MongoSessionMixin {
 
         @JsonCreator
         MongoSessionMixin(
-                @JsonProperty("_id") String id, @JsonProperty("intervalSeconds") long maxInactiveIntervalInSeconds) {}
+                @JsonProperty("_id") final String id,
+                @JsonProperty("intervalSeconds") final long maxInactiveIntervalInSeconds) {}
     }
 
     /** Used to whitelist {@link HashMap} for {@link SecurityJacksonModules}. */
-    private static class HashMapMixin {
+    private static final class HashMapMixin {}
 
-        // Nothing special
-
-    }
-
-    private static class MongoIdNamingStrategy extends PropertyNamingStrategies.NamingBase {
+    private static final class MongoIdNamingStrategy extends PropertyNamingStrategies.NamingBase {
         private static final long serialVersionUID = 2L;
 
         @Override

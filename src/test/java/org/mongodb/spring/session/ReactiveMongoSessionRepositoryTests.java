@@ -82,14 +82,14 @@ class ReactiveMongoSessionRepositoryTests {
     void shouldCreateSession() {
 
         this.repository
-                .createSession() //
-                .as(StepVerifier::create) //
+                .createSession()
+                .as(StepVerifier::create)
                 .expectNextMatches((mongoSession) -> {
                     assertThat(mongoSession.getId()).isNotEmpty();
                     assertThat(mongoSession.getMaxInactiveInterval())
                             .isEqualTo(Duration.ofSeconds(MapSession.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS));
                     return true;
-                }) //
+                })
                 .verifyComplete();
     }
 
@@ -107,10 +107,7 @@ class ReactiveMongoSessionRepositoryTests {
         given(this.mongoOperations.save(dbSession, "sessions")).willReturn(Mono.just(dbSession));
 
         // when
-        this.repository
-                .save(session) //
-                .as(StepVerifier::create) //
-                .verifyComplete();
+        this.repository.save(session).as(StepVerifier::create).verifyComplete();
 
         verify(this.mongoOperations).save(dbSession, ReactiveMongoSessionRepository.DEFAULT_COLLECTION_NAME);
     }
@@ -136,9 +133,9 @@ class ReactiveMongoSessionRepositoryTests {
 
         // when
         this.repository
-                .findById(sessionId) //
-                .as(StepVerifier::create) //
-                .expectNext(session) //
+                .findById(sessionId)
+                .as(StepVerifier::create)
+                .expectNext(session)
                 .verifyComplete();
     }
 
@@ -166,10 +163,7 @@ class ReactiveMongoSessionRepositoryTests {
                 .willReturn(session);
 
         // when
-        this.repository
-                .findById(sessionId) //
-                .as(StepVerifier::create) //
-                .verifyComplete();
+        this.repository.findById(sessionId).as(StepVerifier::create).verifyComplete();
 
         // then
         verify(this.mongoOperations)
@@ -199,10 +193,7 @@ class ReactiveMongoSessionRepositoryTests {
                 .willReturn(session);
 
         // when
-        this.repository
-                .deleteById(sessionId) //
-                .as(StepVerifier::create) //
-                .verifyComplete();
+        this.repository.deleteById(sessionId).as(StepVerifier::create).verifyComplete();
 
         verify(this.mongoOperations)
                 .remove(any(Document.class), eq(ReactiveMongoSessionRepository.DEFAULT_COLLECTION_NAME));

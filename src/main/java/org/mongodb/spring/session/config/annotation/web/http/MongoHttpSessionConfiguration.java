@@ -87,7 +87,7 @@ public class MongoHttpSessionConfiguration implements BeanClassLoaderAware, Embe
      */
     @Bean
     @SuppressWarnings("NullAway")
-    public MongoIndexedSessionRepository mongoSessionRepository(MongoOperations mongoOperations) {
+    public MongoIndexedSessionRepository mongoSessionRepository(final MongoOperations mongoOperations) {
 
         MongoIndexedSessionRepository repository = new MongoIndexedSessionRepository(mongoOperations);
         repository.setDefaultMaxInactiveInterval(this.maxInactiveInterval);
@@ -128,7 +128,7 @@ public class MongoHttpSessionConfiguration implements BeanClassLoaderAware, Embe
      *
      * @param collectionName the collection name to use
      */
-    public void setCollectionName(String collectionName) {
+    public void setCollectionName(final String collectionName) {
         this.collectionName = collectionName;
     }
 
@@ -137,7 +137,7 @@ public class MongoHttpSessionConfiguration implements BeanClassLoaderAware, Embe
      *
      * @param maxInactiveInterval the max inactive interval to use
      */
-    public void setMaxInactiveInterval(Duration maxInactiveInterval) {
+    public void setMaxInactiveInterval(final Duration maxInactiveInterval) {
         this.maxInactiveInterval = maxInactiveInterval;
     }
 
@@ -149,13 +149,13 @@ public class MongoHttpSessionConfiguration implements BeanClassLoaderAware, Embe
      */
     @Deprecated
     @SuppressWarnings("InlineMeSuggester")
-    public void setMaxInactiveIntervalInSeconds(Integer maxInactiveIntervalInSeconds) {
+    public void setMaxInactiveIntervalInSeconds(final Integer maxInactiveIntervalInSeconds) {
         setMaxInactiveInterval(Duration.ofSeconds(maxInactiveIntervalInSeconds));
     }
 
     @Override
     @SuppressWarnings("NullAway")
-    public void setImportMetadata(AnnotationMetadata importMetadata) {
+    public void setImportMetadata(final AnnotationMetadata importMetadata) {
 
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(
                 importMetadata.getAnnotationAttributes(EnableMongoHttpSession.class.getName()));
@@ -178,7 +178,7 @@ public class MongoHttpSessionConfiguration implements BeanClassLoaderAware, Embe
      * @param mongoSessionConverter the converter to use; may be {@code null} to use the default converter
      */
     @Autowired(required = false)
-    public void setMongoSessionConverter(AbstractMongoSessionConverter mongoSessionConverter) {
+    public void setMongoSessionConverter(final AbstractMongoSessionConverter mongoSessionConverter) {
         this.mongoSessionConverter = mongoSessionConverter;
     }
 
@@ -189,18 +189,19 @@ public class MongoHttpSessionConfiguration implements BeanClassLoaderAware, Embe
      */
     @Autowired(required = false)
     public void setSessionRepositoryCustomizers(
-            ObjectProvider<SessionRepositoryCustomizer<MongoIndexedSessionRepository>> sessionRepositoryCustomizers) {
+            final ObjectProvider<SessionRepositoryCustomizer<MongoIndexedSessionRepository>>
+                    sessionRepositoryCustomizers) {
         this.sessionRepositoryCustomizers =
                 sessionRepositoryCustomizers.orderedStream().collect(Collectors.toList());
     }
 
     @Override
-    public void setBeanClassLoader(ClassLoader classLoader) {
+    public void setBeanClassLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     @Override
-    public void setEmbeddedValueResolver(StringValueResolver resolver) {
+    public void setEmbeddedValueResolver(final StringValueResolver resolver) {
         this.embeddedValueResolver = resolver;
     }
 
@@ -210,7 +211,7 @@ public class MongoHttpSessionConfiguration implements BeanClassLoaderAware, Embe
      * @param indexResolver the index resolver to set; may be {@code null} to use default behavior
      */
     @Autowired(required = false)
-    public void setIndexResolver(IndexResolver<Session> indexResolver) {
+    public void setIndexResolver(final IndexResolver<Session> indexResolver) {
         this.indexResolver = indexResolver;
     }
 
@@ -220,7 +221,7 @@ public class MongoHttpSessionConfiguration implements BeanClassLoaderAware, Embe
      * @param sessionIdGenerator the session id generator to use; must not be {@code null}
      */
     @Autowired(required = false)
-    public void setSessionIdGenerator(SessionIdGenerator sessionIdGenerator) {
+    public void setSessionIdGenerator(final SessionIdGenerator sessionIdGenerator) {
         this.sessionIdGenerator = sessionIdGenerator;
     }
 }
