@@ -41,6 +41,8 @@ plugins {
 
 description = "Spring Session and Spring MongoDB integration"
 
+val testLatest: Boolean = System.getProperty("latest", "false").toBoolean()
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -157,14 +159,18 @@ buildConfig {
 // Dependencies
 
 dependencies {
-    api(platform(libs.spring.session.bom))
-    api(libs.spring.session.core)
-
-    api(platform(libs.spring.data.bom))
-    api(libs.spring.data.mongodb)
-
-    api(platform(libs.spring.security.bom))
-    api(libs.spring.security.core)
+    // Check if running a canary check against the latest minor version
+    if (testLatest) {
+        api(platform(libs.spring.session.bom.latest))
+        api(platform(libs.spring.security.bom.latest))
+        api(platform(libs.spring.data.bom.latest))
+        api(libs.bundles.spring.main.latest)
+    } else {
+        api(platform(libs.spring.session.bom))
+        api(platform(libs.spring.security.bom))
+        api(platform(libs.spring.data.bom))
+        api(libs.bundles.spring.main)
+    }
 
     api(libs.jspecify)
 

@@ -21,6 +21,7 @@ functions:
     - command: "git.get_project"
       params:
         directory: "src"
+        shallow_clone: true
 
   "create-expansions":
     - command: "subprocess.exec"
@@ -146,6 +147,37 @@ tasks:
           args:
             - "run-integration-tests.sh"
 
+  - name: "unit-tests-latest-task"
+    tags:
+      - "pr"
+    commands:
+      - command: "subprocess.exec"
+        type: "test"
+        params:
+          working_dir: "src"
+          binary: "bash"
+          add_to_path:
+            - ".evergreen"
+          env:
+            TEST_LATEST: "true"
+          args:
+            - "run-unit-tests.sh"
+
+  - name: "integration-tests-latest-task"
+    commands:
+      - func: "bootstrap-mongo-orchestration"
+      - command: "subprocess.exec"
+        type: "test"
+        params:
+          working_dir: "src"
+          binary: "bash"
+          add_to_path:
+            - ".evergreen"
+          env:
+            TEST_LATEST: "true"
+          args:
+            - "run-integration-tests.sh"
+
   - name: "publish-snapshots-task"
     depends_on:
       - variant: "static-checks"
@@ -242,12 +274,23 @@ buildvariants:
 
   - matrix_name: "MongoDB Spring Session"
     matrix_spec: { mongo-version: "*", topology: "*", os: "*" }
-
     display_name: "${mongo-version} ${topology} ${os}"
     tags:
       - "pr"
     tasks:
       - name: "integration-tests-task"
+
+  - name: "MongoDB Spring Session Latest"
+    display_name: "Latest Spring dependencies"
+    run_on: "rhel80-medium"
+    cron: "@weekly"
+    expansions:
+      mongo-version: "8.0"
+      toplogy: "sharded_cluster"
+      os: "linux"
+    tasks:
+      - name: "unit-tests-latest-task"
+      - name: "integration-tests-latest-task"
 
   - name: "publish-snapshot"
     display_name: "Publish Snapshot"

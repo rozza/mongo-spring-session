@@ -15,4 +15,9 @@ echo "MongoDB version: ${MONGODB_VERSION}; topology: ${TOPOLOGY}"
 
 ./gradlew -version
 
-./gradlew -PjavaVersion=${JAVA_VERSION} --stacktrace --info --continue clean integrationTest
+if [[ "$TEST_LATEST" == "true" ]]; then
+  echo "Testing against the latest version:"
+  ./gradlew -q dependencies --configuration compileClasspath -Dlatest=$TEST_LATEST
+fi
+
+./gradlew -PjavaVersion=${JAVA_VERSION} --stacktrace --info --continue clean integrationTest -Dlatest=$TEST_LATEST

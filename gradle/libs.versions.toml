@@ -17,6 +17,13 @@ spring-session = "4.0.0"
 spring-data = "2025.1.0"
 spring-security = "7.0.0"
 spring-framework = "7.0.0"
+
+# Canary tests for latest minor versions
+spring-session-latest = "4.+"
+spring-data-latest = "2025.+"
+spring-security-latest = "7.+"
+spring-framework-latest = "7.+"
+
 jackson2 = "2.20.1"
 jackson3 = "3.0.2"
 jspecify = "1.0.0"
@@ -48,17 +55,16 @@ plugin-buildconfig = "5.5.4"
 
 [libraries]
 spring-session-bom = { module = "org.springframework.session:spring-session-bom", version.ref = "spring-session" }
-spring-session-core = { module = "org.springframework.session:spring-session-core" }
 spring-data-bom = { module = "org.springframework.data:spring-data-bom", version.ref = "spring-data" }
+spring-security-bom = { module = "org.springframework.security:spring-security-bom", version.ref = "spring-security" }
+spring-session-core = { module = "org.springframework.session:spring-session-core" }
 spring-data-mongodb = { module = "org.springframework.data:spring-data-mongodb" }
+spring-security-core = { module = "org.springframework.security:spring-security-core" }
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify"}
 jackson2-bom =  { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson2" }
 jackson2-databind =  { module = "com.fasterxml.jackson.core:jackson-databind" }
 jackson3-bom =  { module = "tools.jackson:jackson-bom", version.ref = "jackson3" }
 jackson3-databind =  { module = "tools.jackson.core:jackson-databind" }
-
-spring-security-bom = { module = "org.springframework.security:spring-security-bom", version.ref = "spring-security" }
-spring-security-core = { module = "org.springframework.security:spring-security-core" }
 
 project-reactor-bom = { module = "io.projectreactor:reactor-bom", version.ref = "project-reactor" }
 project-reactor-core = { module = "io.projectreactor:reactor-core" }
@@ -96,10 +102,29 @@ spring-test =  { module = "org.springframework:spring-test" }
 spring-web =  { module = "org.springframework:spring-web" }
 spring-webflux =  { module = "org.springframework:spring-webflux" }
 
+# Canary latest libs
+spring-session-bom-latest = { module = "org.springframework.session:spring-session-bom", version.ref = "spring-session-latest" }
+spring-data-bom-latest = { module = "org.springframework.data:spring-data-bom", version.ref = "spring-data-latest" }
+spring-security-bom-latest = { module = "org.springframework.security:spring-security-bom", version.ref = "spring-security-latest" }
+
+spring-security-core-latest = { module = "org.springframework.security:spring-security-core" }
+spring-session-core-latest = { module = "org.springframework.session:spring-session-core" }
+spring-data-mongodb-latest = { module = "org.springframework.data:spring-data-mongodb" }
+
+spring-framework-bom-latest = { module = "org.springframework:spring-framework-bom", version.ref = "spring-framework" }
+spring-security-config-latest = { module = "org.springframework.security:spring-security-config" }
+spring-security-web-latest =  { module = "org.springframework.security:spring-security-web" }
+spring-test-latest =  { module = "org.springframework:spring-test" }
+spring-web-latest =  { module = "org.springframework:spring-web" }
+spring-webflux-latest =  { module = "org.springframework:spring-webflux" }
+
 [bundles]
 testing = ["junit-jupiter", "assertj", "hamcrest", "mockito-core", "mockito-junit-jupiter"]
 jakarta = ["jakarta-servlet-api", "jakarta-websocket-client-api", "jakarta-websocket-api"]
+spring-main = ["spring-session-core", "spring-data-mongodb", "spring-security-core"]
 spring-test = ["spring-security-config", "spring-security-web", "spring-test", "spring-web", "spring-webflux"]
+spring-main-latest = ["spring-session-core-latest", "spring-data-mongodb-latest", "spring-security-core-latest"]
+spring-test-latest = ["spring-security-config-latest", "spring-security-web-latest", "spring-test-latest", "spring-web-latest", "spring-webflux-latest"]
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "plugin-spotless" }

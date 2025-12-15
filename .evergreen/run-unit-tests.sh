@@ -13,4 +13,9 @@ echo "mongo-spring-session: running unit tests ..."
 
 ./gradlew -version
 
-./gradlew -PjavaVersion=${JAVA_VERSION} --stacktrace --info --continue clean test
+if [[ "$TEST_LATEST" == "true" ]]; then
+  echo "Testing against the latest version:"
+  ./gradlew -q dependencies --configuration compileClasspath -Dlatest=$TEST_LATEST
+fi
+
+./gradlew -PjavaVersion=${JAVA_VERSION} --stacktrace --info --continue clean test -Dlatest=$TEST_LATEST

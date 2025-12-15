@@ -10,6 +10,7 @@ if [ -d "$JDK17" ]; then
 fi
 
 export JAVA_VERSION=${JAVA_VERSION:-17}
+export TEST_LATEST=${TEST_LATEST:-"false"}
 
 echo "Java Configs:"
 echo "Java Home: ${JAVA_HOME}"
