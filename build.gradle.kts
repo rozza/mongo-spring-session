@@ -40,6 +40,7 @@ plugins {
 }
 
 group = "org.mongodb"
+
 description = "Spring Session and Spring MongoDB integration"
 
 val testLatest: Boolean = System.getProperty("latest", "false").toBoolean()
